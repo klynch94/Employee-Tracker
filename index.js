@@ -111,6 +111,7 @@ function viewByDepartment() {
 
 // function to view employees by role
 function viewByRole() {
+    // array to hold roles to provide to user as choices
     let roles = [];
 
     connection.query("SELECT title FROM roles;",
@@ -146,35 +147,43 @@ function viewByRole() {
 
 // function to add employee
 function addEmployee() {
-
-    // asking user what employee they want to view
-    inquirer.prompt([
-        {
-            name: "firstName",
-            type: "input",
-            message: "What is the first name of the new employee you would like to add?",
-        },
-        {
-            name: "lastName",
-            type: "input",
-            message: "What is the last name of the new employee you would like to add?",
-        }
-    ])
-        .then((response) => {
-            connection.query(`INSERT INTO employee SET ?`,
-            {
-                id: 13,
-                first_name: response.firstName,
-                last_name: response.lastName,
-                role_id: null,
-                manager_id: null
-            }, 
-            function(err, res) {
-                if (err) throw err;
-                console.log(`Added ${response.firstName}${" "}${response.lastName}!`);
-                start();
-            })
-    })
+    let numEmployees = [];
+    connection.query("SELECT id FROM employee;",
+        function (err, res) {
+            if (err) throw err;
+            // loop through employees and push into array
+            for (let x = 0; x < res.length; x++) {
+                numEmployees.push(res[x].id);
+            }
+            // asking user the name of the new employee
+            inquirer.prompt([
+                {
+                    name: "firstName",
+                    type: "input",
+                    message: "What is the first name of the new employee you would like to add?",
+                },
+                {
+                    name: "lastName",
+                    type: "input",
+                    message: "What is the last name of the new employee you would like to add?",
+                }
+            ])
+                .then((response) => {
+                    connection.query(`INSERT INTO employee SET ?`,
+                        {
+                            id: numEmployees.length + 1,
+                            first_name: response.firstName,
+                            last_name: response.lastName,
+                            role_id: null,
+                            manager_id: null
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                            console.log(`Added ${response.firstName}${" "}${response.lastName}!`);
+                            start();
+                        })
+                })
+        })
 }
 
 // function to add a new department
