@@ -146,30 +146,55 @@ function viewByRole() {
 
 // function to add employee
 function addEmployee() {
-    let employees = [];
 
     // asking user what employee they want to view
-    inquirer.prompt({
-        name: "role",
-        type: "list",
-        message: "Which of the following employees would you like to view?",
-        choices: employees
-    })
+    inquirer.prompt([
+        {
+            name: "firstName",
+            type: "input",
+            message: "What is the first name of the new employee you would like to add?",
+        },
+        {
+            name: "lastName",
+            type: "input",
+            message: "What is the last name of the new employee you would like to add?",
+        }
+    ])
         .then((response) => {
-
-        })
+            connection.query(`INSERT INTO employee SET ?`,
+            {
+                id: 13,
+                first_name: response.firstName,
+                last_name: response.lastName,
+                role_id: null,
+                manager_id: null
+            }, 
+            function(err, res) {
+                if (err) throw err;
+            })
+            console.log(`Added ${response.firstName}${" "}${response.lastName}!`);
+            start();
+    })
 }
 
 // function to add a new department
 function newDepartment() {
     inquirer.prompt({
-        name: "employee",
+        name: "newDepartment",
         type: "input",
         message: "What is the name of the new department you would like to add?",
     })
         .then((response) => {
-            response.employee
+            connection.query(`INSERT INTO department SET ?`,
+            {
+                id: 6,
+                name: response.newDepartment
+            }, 
+            function(err, res) {
+                if (err) throw err;
         })
+        start();
+    })
 }
 
 // function to create a new role
