@@ -219,7 +219,41 @@ function newDepartment() {
 
 // function to create a new role
 function newRole() {
-
+    // array to hold number of roles to create the id
+    let numRoles = [];
+    connection.query("SELECT id FROM roles;",
+        function (err, res) {
+            if (err) throw err;
+            // loop through roles and push into array
+            for (let x = 0; x < res.length; x++) {
+                numRoles.push(res[x].id);
+            }
+            inquirer.prompt([
+                {
+                    name: "newRole",
+                    type: "input",
+                    message: "What is the name of the new role you would like to add?",
+                },
+                {
+                    name: "salary",
+                    type: "input",
+                    message: "What is the salary for this new role?",
+                }
+            ])
+                .then((response) => {
+                    connection.query(`INSERT INTO roles SET ?`,
+                        {
+                            id: numRoles.length + 1,
+                            title: response.newRole,
+                            salary: response.salary,
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                        })
+                    console.log(`Successfully added ${response.newRole}!`);
+                    start();
+                })
+        })
 }
 
 // function to update an employee role
