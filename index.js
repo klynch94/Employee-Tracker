@@ -270,6 +270,7 @@ function updateRole() {
             choices: employees
         })
             .then((response) => {
+                let employeeId = response.employeeChoice.split(' ')[0];
                 connection.query("SELECT id, title FROM roles;",
                     function (err, res) {
                         if (err) throw err;
@@ -283,17 +284,18 @@ function updateRole() {
                             choices: roles
                         })
                             .then((response2) => {
-                                console.log(response2.newRole.split(' ')[0])
+                                connection.query(`UPDATE employee SET role_id=${response2.newRole.split(' ')[0]} WHERE employee.id=${employeeId}`,
+                                function (err, res) {
+                                    if (err) throw err;
+                                })
+                                console.log("Role update successful!");
+                                start();
+                                // console.log(employeeId);
+                                // console.log(response2.newRole.split(' ')[0])
                             })
                     })
 
             })
     }
     )
-}
-
-
-// function to remove an employee
-function removeEmployee() {
-
 }
