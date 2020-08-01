@@ -10,8 +10,8 @@ var connection = mysql.createConnection({
     password: "root12345",
     database: "work_db"
 });
-  
-connection.connect(function(err) {
+
+connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n");
     // run beginning function
@@ -30,49 +30,48 @@ function start() {
             "Add an employee",
             "Add a new department",
             "Add a new role",
-            "Update an employee role",
-            "Remove an employee"
+            "Update an employee role"
         ]
     })
-    // running a function based on user repsonse...
-    .then((response) => {
-        switch (response.menu) {
-            case "View all employees":
-                viewAll();
-                break;
-            case "View employees by department":
-                viewByDepartment();
-                break;
-            case "View employees by role":
-                viewByRole();
-                break;
-            case "Add an employee":
-                addEmployee();
-                break;
-            case "Add a new department":
-                newDepartment();
-                break;
-            case "Add a new role":
-                newRole();
-                break;
-            case "Update an employee role":
-                updateRole();
-                break;
-            case "Remove an employee":
-                removeEmployee();
-                break;
-        }
-    });
+        // running a function based on user repsonse...
+        .then((response) => {
+            switch (response.menu) {
+                case "View all employees":
+                    viewAll();
+                    break;
+                case "View employees by department":
+                    viewByDepartment();
+                    break;
+                case "View employees by role":
+                    viewByRole();
+                    break;
+                case "Add an employee":
+                    addEmployee();
+                    break;
+                case "Add a new department":
+                    newDepartment();
+                    break;
+                case "Add a new role":
+                    newRole();
+                    break;
+                case "Update an employee role":
+                    updateRole();
+                    break;
+                case "Remove an employee":
+                    removeEmployee();
+                    break;
+            }
+        });
 }
 
 // function to view all employees
 function viewAll() {
-    connection.query("SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.name, roles.salary, employee.manager_id, employee.first_name FROM employee INNER JOIN roles ON employee.role_id=roles.id INNER JOIN department ON department.id=roles.department_id;", 
-    function(err, res) {
-        if (err) throw err;
-        console.table(res);
-        start();
-    })
+    connection.query("SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.name, roles.salary, employee.manager_id, employee.first_name FROM employee INNER JOIN roles ON employee.role_id=roles.id INNER JOIN department ON department.id=roles.department_id;",
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            start();
+        })
 }
 
 function viewByDepartment() {
@@ -139,7 +138,7 @@ function viewByRole() {
                         function (err, res) {
                             if (err) throw err;
                             console.table(res);
-                            start();    
+                            start();
                         })
                 })
         })
@@ -285,13 +284,11 @@ function updateRole() {
                         })
                             .then((response2) => {
                                 connection.query(`UPDATE employee SET role_id=${response2.newRole.split(' ')[0]} WHERE employee.id=${employeeId}`,
-                                function (err, res) {
-                                    if (err) throw err;
-                                })
+                                    function (err, res) {
+                                        if (err) throw err;
+                                    })
                                 console.log("Role update successful!");
                                 start();
-                                // console.log(employeeId);
-                                // console.log(response2.newRole.split(' ')[0])
                             })
                     })
 
